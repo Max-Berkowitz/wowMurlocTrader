@@ -6,10 +6,11 @@ export default class extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { items: [], values: {}, totals: [] };
+    this.state = { items: [], values: {}, totals: [], showLesserTeirs: false };
 
     this.handleValueChange = this.handleValueChange.bind(this);
     this.calculateTotals = this.calculateTotals.bind(this);
+    this.toggleShowLesserTeirs = this.toggleShowLesserTeirs.bind(this);
   }
 
   async componentDidMount() {
@@ -51,12 +52,20 @@ export default class extends Component {
     this.setState({ totals });
   }
 
+  toggleShowLesserTeirs() {
+    const { showLesserTeirs } = this.state;
+    this.setState({ showLesserTeirs: !showLesserTeirs });
+  }
+
   render() {
-    const { items, values, totals } = this.state;
+    const { items, values, totals, showLesserTeirs } = this.state;
     return (
       <Fragment>
+        <button type="submit" onClick={this.toggleShowLesserTeirs}>
+          {showLesserTeirs ? 'Hide' : 'Show'} Teir 3 and 4 Items
+        </button>
         {items
-          .filter(({ teir }) => teir === 3 || teir === 4 || teir === 5)
+          .filter(({ teir }) => teir >= (showLesserTeirs ? 3 : 5))
           .sort((a, b) => b.teir - a.teir)
           .map(item => (
             <ItemDisplay

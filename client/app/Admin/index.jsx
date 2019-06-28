@@ -14,6 +14,7 @@ export default class extends Component {
 
     this.newItemFormChange = this.newItemFormChange.bind(this);
     this.submitNewItem = this.submitNewItem.bind(this);
+    this.addNewCost = this.addNewCost.bind(this);
   }
 
   newItemFormChange({ target }, isNum) {
@@ -27,6 +28,15 @@ export default class extends Component {
       vendor: newItemVendor,
       teir: newItemTeir,
       costs: JSON.parse(newItemCosts),
+    });
+  }
+
+  addNewCost() {
+    const { newItemCosts } = this.state;
+    this.setState({
+      newItemCosts: `${newItemCosts.slice(0, -1)}${
+        newItemCosts[newItemCosts.length - 2] === ']' ? ',' : ''
+      }["name", count]${newItemCosts.slice(-1)}`,
     });
   }
 
@@ -44,8 +54,18 @@ export default class extends Component {
         </form>
         <form onSubmit={e => e.preventDefault()}>
           <label>Teir:</label>
-          <input type="number" name="newItemTeir" value={newItemTeir} onChange={e => this.newItemFormChange(e, true)} />
+          <input
+            type="number"
+            name="newItemTeir"
+            value={newItemTeir}
+            onChange={e => this.newItemFormChange(e, true)}
+            min="0"
+            max="5"
+          />
         </form>
+        <button type="submit" onClick={this.addNewCost}>
+          Add New Cost
+        </button>
         <form onSubmit={e => e.preventDefault()}>
           <label>Costs:</label>
           <input

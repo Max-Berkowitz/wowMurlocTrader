@@ -20,7 +20,7 @@ export default Object.assign(
   ({ item: { name }, count, handleValueChange }) => (
     <ItemForm onSubmit={e => e.preventDefault()}>
       <ItemName>{name}:</ItemName>
-      <NumberRequired type="number" value={count} onChange={e => handleValueChange(e, name)} />
+      <NumberRequired type="number" value={count} onChange={e => handleValueChange(e, name)} min="0" max="99" />
     </ItemForm>
   ),
   {

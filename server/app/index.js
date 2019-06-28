@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 import routeHTML from './routeHTML';
 import template from './template';
 import api from './api/index';
-import { checkLoggedIn } from './utils/utils';
 
 const config = process.env.NODE_ENV === 'production' ? process.env : require('../../config/config');
 
@@ -28,9 +27,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/dist', serve(`${__dirname}/../../client/dist/`));
 
-app.use('/api', checkLoggedIn, api);
+app.use('/favicon.ico', serve(`${__dirname}/../favicon/favicon.ico`));
 
-app.get('*', checkLoggedIn, (req, res) => {
+app.use('/api', api);
+
+app.get('*', (req, res) => {
   const html = routeHTML(req.url);
   res.send(template(html));
 });
