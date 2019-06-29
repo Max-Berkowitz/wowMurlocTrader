@@ -6,11 +6,20 @@ export default class extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { items: [], values: {}, totals: [], showLesserTeirs: false };
+    this.state = {
+      items: [],
+      values: {},
+      totals: [],
+      showLesserTeirs: false,
+      checkBoxes: {},
+      hideAllCheckBoxes: true,
+    };
 
     this.handleValueChange = this.handleValueChange.bind(this);
     this.calculateTotals = this.calculateTotals.bind(this);
     this.toggleShowLesserTeirs = this.toggleShowLesserTeirs.bind(this);
+    this.toggleCheckBox = this.toggleCheckBox.bind(this);
+    this.toggleHideAllCheckBoxes = this.toggleHideAllCheckBoxes.bind(this);
   }
 
   async componentDidMount() {
@@ -57,8 +66,18 @@ export default class extends Component {
     this.setState({ showLesserTeirs: !showLesserTeirs });
   }
 
+  toggleCheckBox({ target: { name } }) {
+    const { checkBoxes } = this.state;
+    this.setState({ checkBoxes: { ...checkBoxes, [name]: !checkBoxes[name] } });
+  }
+
+  toggleHideAllCheckBoxes() {
+    const { hideAllCheckBoxes } = this.state;
+    this.setState({ hideAllCheckBoxes: !hideAllCheckBoxes });
+  }
+
   render() {
-    const { items, values, totals, showLesserTeirs } = this.state;
+    const { items, values, totals, showLesserTeirs, checkBoxes, hideAllCheckBoxes } = this.state;
     return (
       <Fragment>
         <button type="submit" onClick={this.toggleShowLesserTeirs}>
@@ -78,13 +97,24 @@ export default class extends Component {
         <button type="submit" onClick={this.calculateTotals}>
           Calculate
         </button>
+        <br />
         {Object.entries(totals)
           .sort((a, b) => a[1][2] - b[1][2])
           .map(([name, [count, vendor]]) => (
-            <div key={name}>
-              {vendor}: {name} - {count}
+            <div
+              key={name}
+              style={{ fontSize: '150%', marginTop: '10px' }}
+              hidden={!(!checkBoxes[name] || !hideAllCheckBoxes)}
+            >
+              <input style={{ display: 'inline-block' }} type="checkbox" name={name} onChange={this.toggleCheckBox} />
+              <div style={{ display: 'inline-block' }}>
+                {vendor}: {name} - {count}
+              </div>
             </div>
           ))}
+        <button type="submit" onClick={this.toggleHideAllCheckBoxes} hidden={!Object.keys(totals).length}>
+          {hideAllCheckBoxes ? 'Show' : 'Hide'} Checked Items
+        </button>
       </Fragment>
     );
   }
